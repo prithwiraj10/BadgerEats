@@ -279,7 +279,31 @@ The backend provides the following API endpoints:
 ### Health Check
 - `GET /health` - Server health check
 
-## CORS Configuration
+## Security Considerations
+
+### Rate Limiting
+
+For production deployments, consider adding rate limiting to protect against DoS attacks:
+
+```bash
+npm install express-rate-limit
+```
+
+```typescript
+// backend/src/app.ts
+import rateLimit from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+});
+
+// Apply to all routes or specific routes
+app.use('/api', limiter);
+```
+
+### CORS Configuration
 
 The backend has CORS enabled for all origins during development. For production, you may want to restrict this:
 
@@ -290,6 +314,13 @@ app.use(cors({
   credentials: true,
 }));
 ```
+
+### Environment Variables
+
+Never commit secrets to version control. Always use environment variables:
+- Keep `.env` files out of git (already in `.gitignore`)
+- Use different `.env` files for development and production
+- For production, set environment variables through your hosting platform
 
 ## Troubleshooting
 
