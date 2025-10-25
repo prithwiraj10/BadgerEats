@@ -8,7 +8,14 @@ import { errorHandler } from './lib/errorHandler.js';
 
 const app = express();
 
-app.use(cors());
+// Configure CORS to allow a specific frontend origin when set in env (FRONTEND_ORIGIN).
+// If FRONTEND_ORIGIN is not provided the default cors() behavior (allows all origins in dev)
+// will remain.
+if (config.FRONTEND_ORIGIN) {
+  app.use(cors({ origin: config.FRONTEND_ORIGIN }));
+} else {
+  app.use(cors());
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
