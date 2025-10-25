@@ -62,14 +62,31 @@ echo "REACT_APP_API_URL=/api" > .env.development
 npx create-next-app@latest frontend --typescript
 cd frontend
 
-# 2. Configure next.config.js for static export
-output: 'export',
-distDir: 'build'
+# 2. Update next.config.js
+```
 
-# 3. Add rewrites for development
-async rewrites() {
-  return [{ source: '/api/:path*', destination: 'http://localhost:4000/api/:path*' }]
-}
+**next.config.js:**
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',  // For static export
+  distDir: 'build',  // Match backend expectations
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:4000/api/:path*',
+      },
+    ];
+  },
+};
+
+module.exports = nextConfig;
+```
+
+```bash
+# 3. Create .env.local
+echo "NEXT_PUBLIC_API_URL=/api" > .env.local
 ```
 
 ## Making API Calls
@@ -78,7 +95,15 @@ Create an API client in your frontend:
 
 ```typescript
 // frontend/src/api/client.ts
-const API_URL = import.meta.env.VITE_API_URL || '/api'; // or process.env.REACT_APP_API_URL
+
+// For Vite projects:
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+// For Create React App:
+// const API_URL = process.env.REACT_APP_API_URL || '/api';
+
+// For Next.js:
+// const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export const api = {
   async getUsers() {
