@@ -48,10 +48,10 @@ npm run dev
 
 ### Frontend Integration
 
-To add and integrate a frontend application with this backend, see:
+To add and integrate a frontend application with this backend:
 
-📖 **[Frontend Integration Guide](FRONTEND_INTEGRATION.md)** - Complete guide for linking your frontend
-
+🚀 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in minutes  
+📖 **[Frontend Integration Guide](FRONTEND_INTEGRATION.md)** - Complete guide for linking your frontend  
 📘 **[Frontend Examples](examples/FRONTEND_EXAMPLES.md)** - Ready-to-use configurations for React, Vue, Next.js
 
 The backend is configured to:
