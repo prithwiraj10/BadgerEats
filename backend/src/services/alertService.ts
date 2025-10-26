@@ -37,7 +37,7 @@ async function createAlert(input: CreateAlertInput) {
         location: input.location,
         startTime: input.startTime,
         endTime: input.endTime,
-        tags: input.tags,
+        tags: input.tags.join(","),
         source: input.source,
       },
     });

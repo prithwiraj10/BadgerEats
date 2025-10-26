@@ -20,10 +20,10 @@ async function dispatchAlert(alertId: string): Promise<void> {
     return;
   }
 
-  const prompt = buildPrompt(alert);
+  const prompt = buildPrompt({ ...alert, tags: alert.tags.split(",") });
   const generated = await creaoClient.generate({ prompt, max_tokens: 120, temperature: 0.4 });
 
-  const recipients: UserDto[] = await userService.findSubscribedUsersByTags(alert.tags);
+  const recipients: UserDto[] = await userService.findSubscribedUsersByTags(alert.tags.split(","));
 
   await Promise.all(
     recipients.map(async (user: UserDto) => {

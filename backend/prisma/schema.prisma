@@ -11,7 +11,7 @@ model User {
   id           String   @id @default(cuid())
   name         String
   phoneE164    String   @unique
-  preferences  Json
+  preferences  String   // Changed from Json to String
   subscribed   Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -25,7 +25,7 @@ model Alert {
   location   String
   startTime  DateTime?
   endTime    DateTime?
-  tags       String[]
+  tags       String      // Changed from String[] to String
   source     String
   createdAt  DateTime @default(now())
   deliveries Delivery[]
@@ -37,13 +37,7 @@ model Delivery {
   alertId   String
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  status    DeliveryStatus
+  status    String   // Changed from DeliveryStatus enum to String
   twilioSid String?
   createdAt DateTime @default(now())
-}
-
-enum DeliveryStatus {
-  SENT
-  FAILED
-  STOPPED
 }

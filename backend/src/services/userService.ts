@@ -11,15 +11,21 @@ export type CreateUserInput = {
 
 type DbUser = Prisma.UserGetPayload<{}>;
 
-const mapUser = (user: DbUser) => ({
-  id: user.id,
-  name: user.name,
-  phone: user.phoneE164,
-  preferences: user.preferences as string[],
-  subscribed: user.subscribed,
-  createdAt: user.createdAt,
-  updatedAt: user.updatedAt,
-});
+const mapUser = (user: DbUser) => {
+  const prefs = typeof user.preferences === 'string'
+    ? (JSON.parse(user.preferences) as string[])
+    : (user.preferences ?? [] as string[]);
+
+  return {
+    id: user.id,
+    name: user.name,
+    phone: user.phoneE164,
+    preferences: prefs,
+    subscribed: user.subscribed,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+};
 
 export type UserDto = ReturnType<typeof mapUser>;
 
@@ -29,7 +35,7 @@ async function createUser(input: CreateUserInput) {
       data: {
         name: input.name,
         phoneE164: input.phone,
-        preferences: input.preferences,
+        preferences: JSON.stringify(input.preferences),
       },
     });
 
@@ -50,7 +56,7 @@ async function updatePreferences(userId: string, preferences: string[]) {
   try {
     const user = await prisma.user.update({
       where: { id: userId },
-      data: { preferences },
+      data: { preferences: JSON.stringify(preferences) },
     });
 
     return mapUser(user);
@@ -133,7 +139,7 @@ async function findSubscribedUsersByTags(tags: string[]) {
 
   return users
     .filter((user: DbUser) => {
-      const prefs = (user.preferences as string[]) || [];
+      const prefs = (JSON.parse(user.preferences) as string[]) || [];
       return prefs.length === 0 || prefs.some((pref) => tags.includes(pref));
     })
     .map(mapUser);

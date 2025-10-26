@@ -17,7 +17,7 @@ async function sendSms({ to, body, mediaUrl }: SendSmsOptions) {
     to,
     from: config.TWILIO_FROM,
     body,
-    mediaUrl,
+    mediaUrl: mediaUrl ? [mediaUrl] : undefined,
   });
 
   logger.info({ sid: message.sid, to }, 'SMS sent');
